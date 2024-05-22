@@ -1,11 +1,41 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
+import { Image, StyleSheet, Platform, View, Text, Pressable, Alert, SafeAreaView } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import axios from 'axios'
+import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
+  const [imageList, setImageList] = useState([]);
+
+  const showAlert = () => {
+    Alert.alert(
+      'TITULO TESTE',
+      'MENSAGEM TESTE',
+      [
+        {
+          text: 'SIM',
+          onPress: () => console.log('OK Pressed'),
+        },
+        {
+          text: 'NÂO',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  useEffect(() => {
+    const getGithubUser = async () => {
+
+      axios.get('https://picsum.photos/v2/list?limit=10').then((response) => {
+        console.log(response.data);
+        setImageList(response.data);
+      });
+    }
+
+    getGithubUser()
+  }, [])
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -14,38 +44,26 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      }
+    >
+      <View style={styles.contentContainer}>
+        {imageList.map((image) => {
+          console.log({ image })
+          return (
+            <View key={image.id} style={{ height: 230, width: 300, borderRadius: 5, justifyContent: 'center' }}>
+              <Image
+                source={{ uri: image.download_url }}
+                resizeMode='contain'
+                style={{
+                  borderRadius: 2,
+                  width: 300,
+                  height: 250,
+                }}
+              />
+            </View>
+          );
+        })}
+      </View>
     </ParallaxScrollView>
   );
 }
@@ -67,4 +85,14 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    width: '100%',
+    minHeight: '100%',
+    backgroundColor: 'white',
+    rowGap: 20
+  }
 });
