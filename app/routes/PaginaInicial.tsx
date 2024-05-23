@@ -1,31 +1,13 @@
-import { Image, StyleSheet, Platform, View, Text, Pressable, Alert, SafeAreaView } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import axios from 'axios'
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-export default function HomeScreen() {
-  const [imageList, setImageList] = useState([]);
-
-  const showAlert = () => {
-    Alert.alert(
-      'TITULO TESTE',
-      'MENSAGEM TESTE',
-      [
-        {
-          text: 'SIM',
-          onPress: () => console.log('OK Pressed'),
-        },
-        {
-          text: 'NÂO',
-          onPress: () => console.log('OK Pressed'),
-        },
-      ],
-      { cancelable: false }
-    );
-  };
+const PaginaInicial = ({ navigation }) => {
+    const [imageList, setImageList] = useState([]);
 
   useEffect(() => {
-    const getGithubUser = async () => {
+    const getImageList = async () => {
 
       axios.get('https://picsum.photos/v2/list?limit=10').then((response) => {
         console.log(response.data);
@@ -33,10 +15,10 @@ export default function HomeScreen() {
       });
     }
 
-    getGithubUser()
+    getImageList()
   }, [])
 
-  return (
+    return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
@@ -51,6 +33,7 @@ export default function HomeScreen() {
           console.log({ image })
           return (
             <View key={image.id} style={{ height: 230, width: 300, borderRadius: 5, justifyContent: 'center' }}>
+              <Pressable onPress={() => navigation.navigate('Details', {id: image.id})}>
               <Image
                 source={{ uri: image.download_url }}
                 resizeMode='contain'
@@ -60,39 +43,42 @@ export default function HomeScreen() {
                   height: 250,
                 }}
               />
+              </Pressable>
             </View>
           );
         })}
       </View>
     </ParallaxScrollView>
-  );
-}
+  )};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  contentContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    width: '100%',
-    minHeight: '100%',
-    backgroundColor: 'white',
-    rowGap: 20
-  }
-});
+    titleContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    stepContainer: {
+      gap: 8,
+      marginBottom: 8,
+    },
+    reactLogo: {
+      height: 178,
+      width: 290,
+      bottom: 0,
+      left: 0,
+      position: 'absolute',
+    },
+    contentContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 5,
+      width: '100%',
+      minHeight: '90%',
+      backgroundColor: 'white',
+      rowGap: 20
+    }
+  });
+
+  export default PaginaInicial;
+  
