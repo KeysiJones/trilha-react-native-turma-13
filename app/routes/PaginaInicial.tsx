@@ -1,10 +1,13 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-const PaginaInicial = ({ navigation }) => {
+const PaginaInicial = ({ navigation, route }) => {
     const [imageList, setImageList] = useState([]);
+    const [search, setSearch] = useState('');
+
+    const username = route.params.userName
 
   useEffect(() => {
     const getImageList = async () => {
@@ -28,7 +31,18 @@ const PaginaInicial = ({ navigation }) => {
         />
       }
     >
-      <View style={styles.contentContainer}>
+      <Text style={{fontSize: 20, color: 'black', paddingHorizontal: 20, marginTop: 20}}>Email Logado: {username}</Text>
+      <View style={styles.footer}>
+        <TextInput
+          style={styles.input}
+          placeholder='Digite o nome da imagem que voce procura'
+          onChangeText={(search) => setSearch(search)}
+        />
+        <Pressable onPress={() => Alert.alert(`Sua pesquisa: ${search}`)} style={styles.button}>
+          <Text>Pesquisar</Text>
+        </Pressable>
+      </View>
+      {/* <View style={styles.contentContainer}>
         {imageList.map((image) => {
           console.log({ image })
           return (
@@ -47,7 +61,7 @@ const PaginaInicial = ({ navigation }) => {
             </View>
           );
         })}
-      </View>
+      </View> */}
     </ParallaxScrollView>
   )};
 
@@ -56,6 +70,30 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
+    },
+    footer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignSelf: 'center',
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+      color: 'black',
+      backgroundColor: '#4c4c4c',
+    },
+    button: {
+      height: 50,
+      backgroundColor: '#fff',
+      borderColor: '#000',
+      borderWidth: 1,
+      marginBottom: 15,
+      width: 300,
+      alignSelf: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     stepContainer: {
       gap: 8,

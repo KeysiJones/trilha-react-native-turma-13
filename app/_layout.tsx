@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import PaginaInicial from './routes/PaginaInicial';
 import Detalhes from './routes/Detalhes';
+import Login from './routes/Login';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,6 +31,11 @@ export default function RootLayout() {
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator>
+        <Stack.Screen
+          name='Login'
+          component={Login}
+          options={{ title: 'Login' }}
+        />
         <Stack.Screen
           name='Home'
           component={PaginaInicial}
