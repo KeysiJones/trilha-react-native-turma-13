@@ -1,27 +1,26 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const PaginaInicial = ({ navigation, route }) => {
-    const [imageList, setImageList] = useState([]);
-    const [search, setSearch] = useState('');
+  const [repoList, setRepoList] = useState([])
+  const [query, setQuery] = useState('')
 
-    const username = route.params.userName
+  //const movieId = route.params.movie_id
 
-  useEffect(() => {
-    const getImageList = async () => {
+  function handleSearch() {
+    console.log({ repoList });
 
-      axios.get('https://picsum.photos/v2/list?limit=10').then((response) => {
-        console.log(response.data);
-        setImageList(response.data);
-      });
-    }
+    const url = `https://api.github.com/search/repositories?q=${query}}`;
 
-    getImageList()
-  }, [])
+    axios.get(url).then((response) => {
+      console.log(response.data.items);
+      setRepoList(response.data.items);
+    });
+  }
 
-    return (
+  return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
@@ -31,25 +30,35 @@ const PaginaInicial = ({ navigation, route }) => {
         />
       }
     >
-      <Text style={{fontSize: 20, color: 'black', paddingHorizontal: 20, marginTop: 20}}>Email Logado: {username}</Text>
       <View style={styles.footer}>
         <TextInput
           style={styles.input}
-          placeholder='Digite o nome da imagem que voce procura'
-          onChangeText={(search) => setSearch(search)}
+          placeholder='Digite o nome do repositório que voce procura'
+          onChangeText={(query) => setQuery(query)}
         />
-        <Pressable onPress={() => Alert.alert(`Sua pesquisa: ${search}`)} style={styles.button}>
+        <Pressable onPress={() => handleSearch()} style={styles.button}>
           <Text>Pesquisar</Text>
         </Pressable>
       </View>
-      {/* <View style={styles.contentContainer}>
-        {imageList.map((image) => {
-          console.log({ image })
+      <View style={{ rowGap: 25, justifyContent: 'center', alignItems: 'center' }}>
+        {repoList.map((repo) => {
+          console.log({ repo });
           return (
-            <View key={image.id} style={{ height: 230, width: 300, borderRadius: 5, justifyContent: 'center' }}>
-              <Pressable onPress={() => navigation.navigate('Details', {id: image.id})}>
+            <View key={repo.id} style={{ justifyContent: 'center', backgroundColor: 'green', padding: 10, borderRadius: 10, width: 600 }}>
+              <Text>Descrição: {repo.description}</Text>
+              <Text onPress={() => Linking.openURL(repo.clone_url)}>Clone URL: <Text style={{textDecorationLine: 'underline'}}>{repo.clone_url}</Text></Text>
+            </View>
+          );
+        })}
+      </View>
+      {/* <View style={styles.contentContainer}>
+        {repoList.map((repo) => {
+          console.log({ repo })
+          return (
+            <View key={repo.id} style={{ height: 230, width: 300, borderRadius: 5, justifyContent: 'center' }}>
+              <Pressable onPress={() => navigation.navigate('Details', {id: repo.id})}>
               <Image
-                source={{ uri: image.download_url }}
+                source={{ uri: repo.download_url }}
                 resizeMode='contain'
                 style={{
                   borderRadius: 2,
@@ -63,7 +72,8 @@ const PaginaInicial = ({ navigation, route }) => {
         })}
       </View> */}
     </ParallaxScrollView>
-  )};
+  );
+};
 
 const styles = StyleSheet.create({
     titleContainer: {

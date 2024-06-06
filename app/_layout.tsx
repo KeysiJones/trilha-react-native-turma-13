@@ -31,11 +31,11 @@ export default function RootLayout() {
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator>
-        <Stack.Screen
+        {/* <Stack.Screen
           name='Login'
           component={Login}
           options={{ title: 'Login' }}
-        />
+        /> */}
         <Stack.Screen
           name='Home'
           component={PaginaInicial}
